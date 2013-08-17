@@ -5,6 +5,7 @@ var dgram = require('dgram')
   , io = require('socket.io')
   , nstatic = require('node-static');
 
+
 var udpListenPort = 3947;
 var udpClient = dgram.createSocket('udp4');
 var serverListenPort = 81;
