@@ -8,7 +8,7 @@ var dgram = require('dgram')
 
 var udpListenPort = 3947;
 var udpClient = dgram.createSocket('udp4');
-var serverListenPort = 81;
+var serverListenPort = 3900;
 var fileServer = new nstatic.Server(__dirname + '/www/');
 var webServer = http.createServer(serverHandler);
 var webSocketServer = io.listen(webServer);
@@ -100,7 +100,7 @@ udpClient.on('message', function (msg, rinfo) {
           var alarmStatus = (msgValue == '0' ? 0 : 1);
           if (ICM.alarmStatus != alarmStatus){
             ICM.alarmStatus = alarmStatus;
-            ICM.events.emit('alarmStatusChanged', alarmStatus);
+            ICM.events.emit('alarmStatussChanged', alarmStatus);
           }
           break;
          case 'FireEvent': //this.AlarmState = (count == 0 ? AlarmState.NoAlarm : AlarmState.Fire);
@@ -217,8 +217,10 @@ ICM.events.on('displayChanged', function(displayText){
 
 //load hooks
 require('fs').readdirSync(__dirname + '/hooks/').forEach(function(file) {
-  console.log('Loading Hook: ' + file);
-  require(__dirname + '/hooks/' + file)(ICM);
+  if (file.indexOf('.js') > -1) {
+    console.log('Loading Hook: ' + file);
+    require(__dirname + '/hooks/' + file)(ICM);
+  }
 });
 
 ICM.events.on('displayChanged', function(display){

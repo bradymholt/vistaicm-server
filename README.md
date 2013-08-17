@@ -22,7 +22,7 @@ Quick Start
 2. Download the latest source into a directory on the target server.  You can [download the zip](https://github.com/bradyholt/vistaicm-server/archive/master.zip) and unzip or run **git clonehttps://github.com/bradyholt/vistaicm-server.git**.
 3. Run **npm install** to install node package dependencies.
 3. Run **node server.js** 
-4. Open http://localhost:81/ in a browser.
+4. Open http://localhost:3900/ in a browser.
 
 This will open the web interface which should auto-detect your VISTA-ICM on the network and begin to show display updates (i.e. "Ready to Arm").  You can then click numbers on the keypad to control the VISTA-ICM.
 
