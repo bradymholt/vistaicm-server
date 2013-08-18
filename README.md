@@ -1,7 +1,8 @@
 vistaicm-server
 ==========
 
-<img style="width:250px; float:right; border:solid 1px #c3c3c3; padding:1px; margin-left:10px" src="http://www.geekytidbits.com/wp-content/uploads/20110827-102534.jpg"/>
+![Screenshot](https://raw.github.com/bradyholt/vistaicm-server/gh-pages/screenshot.png)
+
 A Node.js server app that works with the [VISTA-ICM](http://controlworks.com/modules/Product.aspx?pid=80) module to control VISTA (10/15/20/21/50/128/250) alarm panels.  It provides a **clean web interface** and **event handling** through a hook architecture.
 
 Although the VISTA-ICM itself comes with a web interface, it requires Internet Explorer and is painful to use.  Also, the VISTA-ICM originally supported sending emails upon events (faults, alarms) but this service has been discontinued.  vistaicm-server provides a clean, easily modifiable, mobile ready web interface and allows easy extensibility through a hook architecture which opens up interesting possibilities (i.e. auto arm daily at 11PM, trigger X10 relay at time of arm, send iOS notifications through Prowl on alarm events, etc.), requiring little effort. 
@@ -54,11 +55,11 @@ In addition to event based hooks, you can use hooks to schedule time based execu
 
     var cronJob = require('cron').CronJob;
     module.exports = function (ICM) {
-	var job = new cronJob('0 0 23 * * *', function(){ //11PM
-    	  ICM.executeCommand('F4'); //F4 is function key #4 on keypad
-	  });
+    var job = new cronJob('0 0 23 * * *', function(){ //11PM
+          ICM.executeCommand('F4'); //F4 is function key #4 on keypad
+      });
 
-	  job.start();
+      job.start();
     };
 
 
