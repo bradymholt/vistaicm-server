@@ -3,18 +3,16 @@ var dgram = require('dgram')
   , evt = require('events')
   , http = require('http')
   , io = require('socket.io')
-  , nstatic = require('node-static');
-
+  , nstatic = require('node-static')
+  , config = require('./config');
 
 var udpListenPort = 3947;
 var udpClient = dgram.createSocket('udp4');
-var serverListenPort = 3900;
 var fileServer = new nstatic.Server(__dirname + '/www/');
 var webServer = http.createServer(serverHandler);
 var webSocketServer = io.listen(webServer);
 
 var ICM = {
-  commandPoundPrefix : '1-1-1-0-',
   ipAddress : null,
   armStatus : 0,  //0=Disarmed, 1=ArmedStay, 2=ArmedAway 
   alarmStatus : 0, //0=NoAlarm, 1=SecurityAlarm, 2=FireAlarm
@@ -25,7 +23,7 @@ var ICM = {
   executeCommand : function(command) { 
     if (command !== undefined) {
       if (command.indexOf('Pound') == 0 && command.indexOf('-') > -1) {
-        command = ICM.commandPoundPrefix.concat(command);
+        command = config.pound_commands.join('-').concat('-').concat(command);
       }
           
       var commandParts = command.split('-');
@@ -257,5 +255,5 @@ ICM.events.on('statusEvent', function(statusEvent){
 });
 
 udpClient.bind(udpListenPort);
-webServer.listen(serverListenPort);
+webServer.listen(config.http_listen_port);
 

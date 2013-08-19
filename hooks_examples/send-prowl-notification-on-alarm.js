@@ -1,5 +1,3 @@
-/*
-
 var prowl = require('prowler');
 var prowlApiKey = 'prowlKeyHere';
 var notification = new prowl.connection(prowlApiKey);
@@ -19,5 +17,3 @@ module.exports = function (ICM) {
 	    }
 	});
 };
-
-*/
