@@ -256,4 +256,3 @@ ICM.events.on('statusEvent', function(statusEvent){
 
 udpClient.bind(udpListenPort);
 webServer.listen(config.http_listen_port);
-

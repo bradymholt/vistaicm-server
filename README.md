@@ -22,7 +22,7 @@ Quick Start
 1. Ensure [Node.js](http://nodejs.org/) is installed on the machine you will be running vistaicm-server.
 2. Download the latest vistaicm-server source into a directory on the target server.  You can [download the zip](https://github.com/bradyholt/vistaicm-server/archive/master.zip) and unzip or run **git clonehttps://github.com/bradyholt/vistaicm-server.git**.
 3. Run **npm install** to install node package dependencies.
-3. Run **node server.js** 
+3. Run **node server.js** (or *node server.js &* to run in background)
 4. Open http://localhost:3900/ in a browser.
 
 This will open the web interface which should auto-detect your VISTA-ICM on the network and begin to show display updates (i.e. "Ready to Arm").  You can then click numbers on the keypad to control the VISTA-ICM.
@@ -87,7 +87,6 @@ In addition to event based hooks, you can use cron hooks to schedule time based 
     };
 
 As a convenience, a predefined cron.js hook is already present in the hooks folder which you modify and/or add to.
-
 
 Credit
 -----
