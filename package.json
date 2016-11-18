@@ -2,13 +2,14 @@
   "name": "alarmweb",
   "version": "1.0.0",
   "dependencies": {
-    "socket.io": "~0.9.13",
+    "socket.io": "^1.5.1",
     "node-static": "0.6.7",
     "emailjs": "~0.3.4",
     "prowl": "0.0.3",
     "nodemailer": "~0.3.43",
     "prowler": "0.0.3",
     "cron": "~1.0.1",
-    "nma": "~0.1.4"
+    "nma": "~0.1.4",
+    "unofficial-nest-api": "^0.1.4"
   }
 }
