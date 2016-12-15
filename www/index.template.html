@@ -104,24 +104,7 @@ url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAxCAMAAAA/ZnPiAAAABGdBTU
                     PANIC
                 </div>
             </div>
-            <div class="garage_doors" style="display: none;">
-                <div class="button darkblue" id="Pound-7-0-1" style="font-size: x-small;">
-                    LEFT GARAGE
-                </div>
-                <div class="button darkblue" id="Pound-7-0-2" style="font-size: x-small;">
-                    RIGHT GARAGE
-                </div>
-                <div class="button">
-                </div>
-            </div>
-            <div class="x11" style="display: none;">
-                <div class="button green" id="Pound-7-0-1">
-                    1 - ON
-                </div>
-                <div class="button red" id="Pound-8-0-1">
-                    1 - OFF
-                </div>
-            </div>
+            {{button_hooks}}
         </div>
     </div>
     <script type="text/javascript">
@@ -130,7 +113,7 @@ url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAxCAMAAAA/ZnPiAAAABGdBTU
 	});
 
    	var AlarmHelper = {
-    	  init: function(){
+    	init: function(){
             $('.button').mousedown(function() {
               $(this).addClass('pressed');
             });
@@ -139,19 +122,18 @@ url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAxCAMAAAA/ZnPiAAAABGdBTU
               $(this).removeClass('pressed');
             });
 
-	    var commandChannel = io.connect('/command');
-	    var displayChannel = io.connect('/display');
-	    
-	    $('.button').click(function(){
-            	commandChannel.emit('execute', $(this).attr('id'));
+            var commandChannel = io.connect('/command');
+            var displayChannel = io.connect('/display');
+            
+            $('.button').click(function(){
+                commandChannel.emit('execute', $(this).attr('id'));
             });
 
-	    displayChannel.on('updated', function(msg){
+            displayChannel.on('updated', function(msg){
                 $('#display').text(msg.text);
             });
-
 	   }
-         };
+    };
     </script>
 </body>
 </html>
