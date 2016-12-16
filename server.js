@@ -90,17 +90,6 @@ var UI = {
   }
 };
 
-ICM.events.on('readyChanged', function (isReady) {
-  // zoneStatusChanged events are slow from the ICM but readyChanged event is quick so we'll
-  // use it as an indirect way to detect zoneStatusChanged (unfaulted).
-  Object.keys(ICM.zones).forEach(function (key) {
-    if (ICM.zones[key] == true) {
-      ICM.zones[key] = false;
-      ICM.events.emit('zoneStatusChanged', key, false);
-    }
-  });
-});
-
 udpClient.on('message', function (msg, rinfo) {
   if (!ICM.ipAddress) {
     console.log("ICM discovered at: " + rinfo.address);
@@ -208,7 +197,7 @@ udpClient.on('message', function (msg, rinfo) {
   }
 });
 
-//http file server
+// HTTP file server handler
 function serverHandler(req, res) {
   if (req.url.indexOf('/execute') == 0) {
     var url = require('url');
@@ -226,57 +215,94 @@ function serverHandler(req, res) {
   }
 }
 
-webSocketServer
-  .of('/command')
-  .on('connection', function (socket) {
-    socket.on('execute', function (command) {
-      ICM.executeCommand(command);
+function setupWebSocketServer() {
+  process.stdout.write('Setting up web socket server');
+
+  webSocketServer
+    .of('/command')
+    .on('connection', function (socket) {
+      socket.on('execute', function (command) {
+        ICM.executeCommand(command);
+      });
+    });
+
+  webSocketServer
+    .of('/display')
+    .on('connection', function (socket) {
+      socket.emit('updated', { text: ICM.lastDisplayText });
+    });
+
+  console.log(" [ok]");
+}
+
+function setupIcmEventHandlers() {
+  process.stdout.write('Setting up ICM event handlers');
+
+  // ICM event handlers
+  ICM.events.on('readyChanged', function (isReady) {
+    // zoneStatusChanged events are slow from the ICM but readyChanged event is quick so we'll
+    // use it as an indirect way to detect zoneStatusChanged (unfaulted).
+    Object.keys(ICM.zones).forEach(function (key) {
+      if (ICM.zones[key] == true) {
+        ICM.zones[key] = false;
+        ICM.events.emit('zoneStatusChanged', key, false);
+      }
     });
   });
 
-webSocketServer
-  .of('/display')
-  .on('connection', function (socket) {
-    socket.emit('updated', { text: ICM.lastDisplayText });
+
+  ICM.events.on('displayChanged', function (displayText) {
+    webSocketServer
+      .of('/display')
+      .emit('updated', { text: displayText });
   });
 
-ICM.events.on('displayChanged', function (displayText) {
-  webSocketServer
-    .of('/display')
-    .emit('updated', { text: displayText });
-});
+  console.log(" [ok]");
+}
 
-console.log("Booting vista-icm-server");
-// load hooks
-console.log('Loading hooks');
-require('fs').readdirSync(__dirname + '/hooks/').forEach(function (file) {
-  if (file.indexOf('.js') > -1) {
-    process.stdout.write('   ' + file);
-    require(__dirname + '/hooks/' + file)(ICM, UI);
-    console.log(' [ok]');
-  }
-});
+function loadHooks() {
+  console.log('Loading hooks');
+  require('fs').readdirSync(__dirname + '/hooks/').forEach(function (file) {
+    if (file.indexOf('.js') > -1) {
+      process.stdout.write('   ' + file);
+      require(__dirname + '/hooks/' + file)(ICM, UI);
+      console.log(' [ok]');
+    }
+  });
+}
 
-// generate index.html
-process.stdout.write('Generating index.html');
-var templateFile = './www/index.template.html';
-var buttons_html = UI.buttons.map((btn) => {
-  let btnClass = btn.is_aux || btn.is_ext ? "darkblue" : "blue";
-  let btnStyle = btn.label.length > 5 ? "font-size: x-small;" : "";
-  return `
+function generateWwwIndex() {
+  // generate index.html
+  process.stdout.write('Generating index.html');
+  var templateFile = './www/index.template.html';
+  var buttons_html = UI.buttons.map((btn) => {
+    let btnClass = btn.is_aux || btn.is_ext ? "darkblue" : "blue";
+    let btnStyle = btn.label.length > 5 ? "font-size: x-small;" : "";
+    return `
 <div class="button ${btnClass}" id="${btn.command}" style="${btnStyle}">
   ${btn.label}
 </div>`;
-});
+  });
 
-var templateFileContent = fs.readFileSync(templateFile).toString();
-templateFileContent = templateFileContent.replace("{{button_hooks}}", buttons_html.join('\n'));
-fs.writeFileSync('./www/index.html', templateFileContent);
-console.log(" [ok]");
+  var templateFileContent = fs.readFileSync(templateFile).toString();
+  templateFileContent = templateFileContent.replace("{{button_hooks}}", buttons_html.join('\n'));
+  fs.writeFileSync('./www/index.html', templateFileContent);
+  console.log(" [ok]");
+}
+
+// Start up
+console.log("Booting vista-icm-server");
+
+loadHooks();
 
 udpClient.bind(udpListenPort, () => {
-    console.log('UDP client listening on port ' + udpListenPort);
+  console.log('UDP client listening on port ' + udpListenPort);
+  setupIcmEventHandlers();
 });
+
+generateWwwIndex();
+
 webServer.listen(config.http_listen_port, () => {
   console.log("HTTP server listening on port " + config.http_listen_port);
+  setupWebSocketServer();
 });
