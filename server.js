@@ -274,7 +274,6 @@ function loadHooks() {
 function generateWwwIndex() {
   // generate index.html
   process.stdout.write('Generating index.html');
-  var templateFile = './www/index.template.html';
   var buttons_html = UI.buttons.map((btn) => {
     let btnClass = btn.is_aux || btn.is_ext ? "darkblue" : "blue";
     let btnStyle = btn.label.length > 5 ? "font-size: x-small;" : "";
@@ -284,9 +283,9 @@ function generateWwwIndex() {
 </div>`;
   });
 
-  var templateFileContent = fs.readFileSync(templateFile).toString();
+  var templateFileContent = fs.readFileSync(__dirname + '/www/index.template.html').toString();
   templateFileContent = templateFileContent.replace("{{button_hooks}}", buttons_html.join('\n'));
-  fs.writeFileSync('./www/index.html', templateFileContent);
+  fs.writeFileSync(__dirname + '/www/index.html', templateFileContent);
   console.log(" [ok]");
 }
 
