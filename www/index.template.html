@@ -107,6 +107,7 @@ url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAxCAMAAAA/ZnPiAAAABGdBTU
             {{button_hooks}}
         </div>
     </div>
+    <audio id="beep" src="/beep.mp3"></audio>
     <script type="text/javascript">
 	$(function() {
     	  AlarmHelper.init();
@@ -126,6 +127,7 @@ url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAxCAMAAAA/ZnPiAAAABGdBTU
             var displayChannel = io.connect('/display');
             
             $('.button').click(function(){
+                $("#beep").get(0).play();
                 commandChannel.emit('execute', $(this).attr('id'));
             });
 
