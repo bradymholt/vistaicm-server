@@ -1,7 +1,6 @@
 'use strict';
 
 var dgram = require('dgram')
-  , http = require('http')
   , evt = require('events')
   , http = require('http')
   , fs = require('fs')
@@ -17,7 +16,7 @@ var webSocketServer = io.listen(webServer);
 
 var ICM = {
   ipAddress: null,
-  armStatus: 0,  //0=Disarmed, 1=ArmedStay, 2=ArmedAway 
+  armStatus: 0,  //0=Disarmed, 1=ArmedStay, 2=ArmedAway
   alarmStatus: 0, //0=NoAlarm, 1=SecurityAlarm, 2=FireAlarm
   isReady: true,
   lastDisplayText: '',
@@ -200,6 +199,7 @@ udpClient.on('message', function (msg, rinfo) {
 // HTTP file server handler
 function serverHandler(req, res) {
   if (req.url.indexOf('/execute') == 0) {
+    // Execute command
     var url = require('url');
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
@@ -207,6 +207,12 @@ function serverHandler(req, res) {
 
     res.writeHead(200);
     res.end('Command Executed: ' + query.command);
+  } else if (req.url.indexOf('/status') == 0) {
+    // Get alarm arm status (false==Disarmed, true==Armed)
+    res.setHeader('Content-Type', 'application/json');
+    res.writeHead(200);
+    let isDisarmed = (ICM.armStatus == 0);
+    res.end(JSON.stringify({ status: !isDisarmed }));
   }
   else {
     req.addListener('end', function () {
