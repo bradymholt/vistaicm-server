@@ -68,9 +68,10 @@ def off() {
 }
 
 def setDeviceState(state) {
-	log.debug "Executing 'setDeviceState'"
-	def command = status ? $settings.armCommand : $settings.disarmCommand;
-    executeRequest("/execute?command=$command", "GET", false);
+	log.debug "Executing 'setDeviceState ($state)'"
+	def command = state == "on" ? "arm" : "disarm";
+    def code = (state == "on" ? settings.armCommand : settings.disarmCommand);
+    executeRequest("/status?command=$command&code=$code", "GET", false);
 }
 
 def updateState(){
