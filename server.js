@@ -203,15 +203,26 @@ function serverHandler(req, res) {
     var url = require('url');
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
-    ICM.executeCommand(query.command)
+    ICM.executeCommand(query.command);
 
     res.writeHead(200);
     res.end('Command Executed: ' + query.command);
   } else if (req.url.indexOf('/status') == 0) {
-    // Get alarm arm status (false==Disarmed, true==Armed)
+    // Get or set alarm arm status (false==Disarmed, true==Armed)
+
+    var url = require('url');
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.query;
+
+    var isDisarmed = (ICM.armStatus == 0);
+
+    if (query.command && query.code) {
+      ICM.executeCommand(query.code);
+      isDisarmed = query.command == "disarm";
+    }
+
     res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
-    let isDisarmed = (ICM.armStatus == 0);
     res.end(JSON.stringify({ status: !isDisarmed }));
   }
   else {
