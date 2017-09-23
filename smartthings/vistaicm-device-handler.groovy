@@ -17,8 +17,10 @@
 preferences {
 	input("ip", "text", title: "IP", description: "The IP of the REST endpoint (i.e. 192.168.1.110)", displayDuringSetup: true)
 	input("port", "text", title: "Port", description: "The port of the REST endpoint. The default is 3000.", default: "3000", displayDuringSetup: true)
-	input("armCommand", "text", title: "Arm Command", description: "The command to arm the alarm.", displayDuringSetup: true)
-	input("disarmCommand", "text", title: "Disarm Command", description: "The command to disarm the alarm.", displayDuringSetup: true)
+	input("onCommand", "text", title: "On Command", description: "The command to turn the device on.", displayDuringSetup: true)
+	input("offCommand", "text", title: "Off Command", description: "The command to turn the device off.", displayDuringSetup: true)
+	input("onStatus", "text", title: "On Status", description: "The status value that indicates the device is on.", displayDuringSetup: true)
+	input("offStatus", "text", title: "Off Status", description: "The status value that indicates the device is off.", displayDuringSetup: true)
 }
 
 metadata {
@@ -69,9 +71,8 @@ def off() {
 
 def setDeviceState(state) {
 	log.debug "Executing 'setDeviceState ($state)'"
-	def command = state == "on" ? "arm" : "disarm";
-    def code = (state == "on" ? settings.armCommand : settings.disarmCommand);
-    executeRequest("/status?command=$command&code=$code", "GET", false);
+    def command = (state == "on" ? settings.onCommand : settings.offCommand);
+    executeRequest("/execute/?command=$command", "GET", false);
 }
 
 def updateState(){
@@ -80,7 +81,7 @@ def updateState(){
 }
 
 def setUI(status){
-    def switchState = status ? "on" : "off";
+    def switchState = (status == settings.onStatus ? "on" : "off");
     log.debug "New state is: " + switchState;
 
     sendEvent(name: "switch", value: switchState);

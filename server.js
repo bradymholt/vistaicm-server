@@ -207,23 +207,28 @@ function serverHandler(req, res) {
 
     res.writeHead(200);
     res.end('Command Executed: ' + query.command);
-  } else if (req.url.indexOf('/status') == 0) {
-    // Get or set alarm arm status (false==Disarmed, true==Armed)
+  } else if (req.url.indexOf('/status') > -1) {
+    var status = "";
 
-    var url = require('url');
-    var url_parts = url.parse(req.url, true);
-    var query = url_parts.query;
-
-    var isDisarmed = (ICM.armStatus == 0);
-
-    if (query.command && query.code) {
-      ICM.executeCommand(query.code);
-      isDisarmed = query.command == "disarm";
+    //0=Disarmed, 1=ArmedStay, 2=ArmedAway
+    if (ICM.alarmStatus != 0) {
+      // If alarm is faulted, return the alarmStatus
+      switch(ICM.alarmStatus){
+        case 1: status = "alarm_security"; break;
+        case 2: status = "alarm_fire"; break;
+      }
+    } else {
+      // Otherwise, return the armStatus
+      switch(ICM.armStatus){
+        case 0: status = "disarmed"; break;
+        case 1: status = "armed_stay"; break;
+        case 2: status = "armed_away"; break;
+      }
     }
 
     res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
-    res.end(JSON.stringify({ status: !isDisarmed }));
+    res.end(JSON.stringify({ status }));
   }
   else {
     req.addListener('end', function () {
