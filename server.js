@@ -25,9 +25,9 @@ var ICM = {
   executeCommand: function (command) {
     if (command !== undefined) {
       if (command.indexOf('A-') == 0) {
-        // Auxiliary command: command comes in as "A-Pound-7-0-1" and will be translated to "1-2-3-4-Pound-7-0-1" where 1-2-3-4 is config.pound_commands
+        // Auxiliary command: command comes in as "A-Pound-7-0-1" and will be translated to "1-2-3-4-Pound-7-0-1" where 1-2-3-4 is config.poundCommands
         ICM.events.emit('auxiliaryCommand', command);
-        command = command.replace('A-', config.pound_commands.join('-').concat('-'));
+        command = command.replace('A-', config.poundCommands.join('-').concat('-'));
       } else if (command.indexOf('E-') == 0) {
         var externalCommand = command.replace('E-', '');
         // External command: just emit an event and stop
@@ -323,7 +323,16 @@ udpClient.bind(udpListenPort, () => {
 
 generateWwwIndex();
 
-webServer.listen(config.http_listen_port, () => {
-  console.log("HTTP server listening on port " + config.http_listen_port);
+webServer.listen(config.webPort, () => {
+  console.log("HTTP server listening on port " + config.webPort);
   setupWebSocketServer();
 });
+
+// Additional webServers, if configured
+if (config.additionalApiPorts) {
+  console.log("Configuring additional API ports: " + config.additionalApiPorts);
+  for(var port of config.additionalApiPorts) {
+    var additionalServer = http.createServer(serverHandler);
+    additionalServer.listen(port);
+  }
+}

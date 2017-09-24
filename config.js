@@ -1,6 +1,7 @@
 var config = {
- http_listen_port : 3900,
- pound_commands : ["1","2","3","4"]
+  webPort: 3905,
+  additionalApiPorts: [3906, 3907],
+  poundCommands: ["1", "2", "3", "4"]
 };
 
 module.exports = config;
