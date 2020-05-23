@@ -5,6 +5,7 @@
 set -x
 
 # Use name of script directly as service name
+cd "$(dirname "$0")"
 SERVICE_NAME="${PWD##*/}" 
 DEPLOY_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

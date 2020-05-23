@@ -72,7 +72,7 @@ def on() {
 }
 
 def off() {
-  log.debug "Executing 'off'"
+  log.debug  "Executing 'off'"
  
   // Update status to 'off' right away
   updateStatus(0) 
@@ -122,8 +122,10 @@ def parse(String description) {
   def response = parseLanMessage(description)
   log.debug "Network message received:\n  Header data: '${response.header}'\n  Body data: '${response.body}'"  
 
-  def responseData = new groovy.json.JsonSlurper().parseText(response.body)  
-  updateStatus(responseData.status == settings.onStatus)  
+  if (response.body != null) {
+    def responseData = new groovy.json.JsonSlurper().parseText(response.body)
+    updateStatus(responseData.status == settings.onStatus)
+  }  
 }
 
 private storeNetworkDeviceId() {
@@ -139,7 +141,6 @@ private String convertIPtoHex(ipAddress) {
 }
 
 private String convertPortToHex(port) {
-  String hexport = port.toString().format( '%04x', port.toInteger() )
-  log.debug hexport
+  String hexport = port.toString().format( '%04x', port.toInteger() )  
   return hexport
 }

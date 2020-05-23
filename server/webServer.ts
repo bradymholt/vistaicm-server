@@ -26,7 +26,7 @@ export default class Server {
       Server.generatedIndexHtml = true;
     }
 
-    const webServer = http.createServer(this.handleWebRequest);
+    const webServer = http.createServer(this.handleWebRequest.bind(this));
     const webSocketServer = io.listen(webServer);
     webServer.listen(this.port, () => {
       console.log(`Listening on http://0.0.0.0:${this.port} ...`);
@@ -42,8 +42,8 @@ export default class Server {
       var query = url_parts.query;
       this.icm.executeCommand(query.command);
 
-      res.writeHead(200);
-      res.end("Command Executed: " + query.command);
+      res.writeHead(200);   
+      res.end();   
     } else if (req.url!.indexOf("/status") > -1) {
       // Return status
       var status = "";
