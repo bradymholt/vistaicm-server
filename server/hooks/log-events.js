@@ -1,5 +1,3 @@
-var cronJob = require("cron").CronJob;
-
 module.exports = function(ICM) {
   ICM.events.on("displayChanged", function(display) {
     // Not logging displayChanged because it is *very* chatty

@@ -1,0 +1,30 @@
+{
+  "name": "vistaicm-server",
+  "version": "1.0.0",
+  "description": "This project allows a VISTICM control module to be added as a device on the SmartThings platform",
+  "author": "Brady Holt",
+  "license": "MIT",
+  "main": "boot.js",
+  "engines": {
+    "node": ">=12.16.3"
+  },
+  "scripts": {
+    "build": "tsc -b ./",
+    "dev": "ts-node-dev ./boot.ts",
+    "prod": "ts-node --transpile-only ./boot.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.5",
+    "@types/node-static": "^0.7.5",
+    "@types/socket.io": "^2.1.8",
+    "ts-node-dev": "^1.0.0-pre.44"
+  },
+  "dependencies": {
+    "node-static": "0.7.11",
+    "npm-check-updates": "^6.0.1",
+    "request": "^2.88.2",
+    "socket.io": "^2.3.0",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.3"
+  }
+}

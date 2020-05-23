@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+require("./support/jbash.js");
+
+function help() {
+  echo(`\
+Usage: run [command]
+Runs commands for development tooling and deployment
+Commands:
+  init                  Initializes the project by installing dependencies and seeding a config file
+  start                 Starts the server (default command)  
+  deploy [user@host]    Deploys the application (assumes user@host has sudo access)          
+`);
+}
+
+let command = $1 || "start";
+
+switch (command) {
+  case "init":
+    console.log("\x1b[33m%s\x1b[0m", "Initializing project ...");
+    exec(
+      "set -x; cd ./server && cp -n -v config.example.json config.json || true && npm install"
+    );
+    break;
+  case "start":
+    const fs = require("fs");
+    if (
+      !fs.existsSync("./server/config.json") ||
+      !fs.existsSync("./server/node_modules")
+    ) {
+      console.log(
+        "\x1b[31m%s\x1b[0m",
+        "Project not initialized!\nUse `./run init` first."
+      );
+    } else {
+      console.log("\x1b[33m%s\x1b[0m", "Starting server ...");
+      exec(`cd ./server && npm run dev`);
+    }
+    break;
+  case "deploy":
+    const userAtHost = $2;
+    if (userAtHost) {
+      console.log(
+        "[user@host] argument required for deployment.\nFor example: ./run deploy john@awesomehost.com"
+      );
+    }
+
+    const appName = require("./server/package.json").name; // Pull name from package.json
+    const deployPath = `/opt/${appName}`;
+
+    console.log("\x1b[33m%s\x1b[0m", "Deploying ...");
+    set("-x");
+    echo("[Building]");
+    exec(`cd ./server && npm run build`);
+    echo("[Copying files]");
+    exec(
+      `ssh ${userAtHost} "set -x; sudo mkdir -p ${deployPath} && sudo chown -R $USER ${deployPath}"`
+    );
+
+    exec(`rsync -arv ./server/ ${userAtHost}:${deployPath} --delete`);
+    echo("[Provisioning]");
+    exec(`ssh ${userAtHost} "sudo ${deployPath}/provision-systemd.sh"`);
+    console.log("\x1b[32m%s\x1b[0m", "Deployment was successful!");
+    break;
+  default:
+    help();
+}

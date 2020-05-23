@@ -1,0 +1,8 @@
+{
+  "pound_commands": ["1", "2", "3", "4"],
+  "web_listen_ports": [3905, 3906, 3907],
+  "smart_things":{
+    "api_access_token": "123",
+    "alarm_device_id": "456"
+  }  
+}
