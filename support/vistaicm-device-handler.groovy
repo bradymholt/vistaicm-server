@@ -124,7 +124,8 @@ def parse(String description) {
 
   if (response.body != null) {
     def responseData = new groovy.json.JsonSlurper().parseText(response.body)
-    updateStatus(responseData.status == settings.onStatus)
+    def updatedStatus = responseData.status == settings.onStatus ? 1 : 0
+    updateStatus(updatedStatus)
   }  
 }
 
