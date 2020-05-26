@@ -29,7 +29,6 @@ const webInterface = new web(config.web_interface_port, icm);
 webInterface.startup();
 
 // Rest APIs
-
 for (let port of config.api_listen_ports) {
   const apiServer = new api(port, icm);
   apiServer.startup();
