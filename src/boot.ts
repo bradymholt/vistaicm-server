@@ -16,7 +16,7 @@ function loadHooks(icm: ICM) {
   }
 }
 
-console.log("Booting vista-icm-server");
+console.log("Booting vistaicm-server");
 
 const icm = new ICM();
 
