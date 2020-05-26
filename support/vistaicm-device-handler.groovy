@@ -47,14 +47,14 @@ metadata {
   }
 }
 
-def initialize() {  
+def initialize() {
   storeNetworkDeviceId()
   runEvery1Minutes(poll)
 }
 
 def poll() {
   log.debug "Executing 'poll'"
-  sendNetworkRequest("/status", "GET", false)
+  sendNetworkRequest('/status', 'GET', false)
 }
 
 def refresh() {
@@ -64,18 +64,18 @@ def refresh() {
 
 def on() {
   log.debug "Executing 'on'"
- 
-  // Update status to 'on' right away
-  updateStatus(1) 
 
-  sendNetworkRequest("/execute/?command=$settings.onCommand", 'GET', false)  
+  // Update status to 'on' right away
+  updateStatus(1)
+
+  sendNetworkRequest("/execute/?command=$settings.onCommand", 'GET', false)
 }
 
 def off() {
   log.debug  "Executing 'off'"
- 
+
   // Update status to 'off' right away
-  updateStatus(0) 
+  updateStatus(0)
 
   sendNetworkRequest("/execute/?command=$settings.offCommand", 'GET', false)
 }
@@ -83,13 +83,13 @@ def off() {
 def updateStatus(status) {
   log.debug "updateStatus: ${status}"
 
-  switch(status) {
+  switch (status) {
     case 0:
-      sendEvent(name: 'switch', value: "off")      
-      break;
+      sendEvent(name: 'switch', value: 'off')
+      break
     case 1:
-      sendEvent(name: 'switch', value: "on")
-      break;   
+      sendEvent(name: 'switch', value: 'on')
+      break
   }
 }
 
@@ -109,7 +109,7 @@ def sendNetworkRequest(path, method, body) {
       body: body,
       headers: headers)
 
-    log.debug "Sending network message..."
+    log.debug 'Sending network message...'
     sendHubCommand(hubAction)
   }
   catch (Exception e) {
@@ -120,13 +120,13 @@ def sendNetworkRequest(path, method, body) {
 def parse(String description) {
   log.debug "Parsing '${description}'"
   def response = parseLanMessage(description)
-  log.debug "Network message received:\n  Header data: '${response.header}'\n  Body data: '${response.body}'"  
+  log.debug "Network message received:\n  Header data: '${response.header}'\n  Body data: '${response.body}'"
 
   if (response.body != null) {
     def responseData = new groovy.json.JsonSlurper().parseText(response.body)
     def updatedStatus = responseData.status == settings.onStatus ? 1 : 0
     updateStatus(updatedStatus)
-  }  
+  }
 }
 
 private storeNetworkDeviceId() {
@@ -142,6 +142,6 @@ private String convertIPtoHex(ipAddress) {
 }
 
 private String convertPortToHex(port) {
-  String hexport = port.toString().format( '%04x', port.toInteger() )  
+  String hexport = port.toString().format( '%04x', port.toInteger() )
   return hexport
 }
