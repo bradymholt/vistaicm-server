@@ -65,6 +65,11 @@ def refresh() {
 def on() {
   log.debug "Executing 'on'"
 
+  if (!settings.onCommand) {
+    log.debug "There is no onCommand parameter specified for this switch so it will not be turned on."
+    return 
+  }
+
   // Update status to 'on' right away
   changeState(true)
 
