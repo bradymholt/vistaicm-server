@@ -66,7 +66,7 @@ def on() {
   log.debug "Executing 'on'"
 
   // Update status to 'on' right away
-  updateStatus(1)
+  changeState(true)
 
   sendNetworkRequest("/execute/?command=$settings.onCommand", 'GET', false)
 }
@@ -75,22 +75,20 @@ def off() {
   log.debug  "Executing 'off'"
 
   // Update status to 'off' right away
-  updateStatus(0)
+  changeState(false)
 
   sendNetworkRequest("/execute/?command=$settings.offCommand", 'GET', false)
 }
 
-def updateStatus(status) {
-  log.debug "updateStatus: ${status}"
 
-  switch (status) {
-    case 0:
-      sendEvent(name: 'switch', value: 'off')
-      break
-    case 1:
-      sendEvent(name: 'switch', value: 'on')
-      break
-  }
+def changeState(isOn) {
+  log.debug "changeState: ${isOn}"
+
+  if (isOn) {
+    sendEvent(name: 'switch', value: 'on')
+  } else {
+    sendEvent(name: 'switch', value: 'off')
+  }  
 }
 
 def sendNetworkRequest(path, method, body) {
@@ -124,8 +122,8 @@ def parse(String description) {
 
   if (response.body != null) {
     def responseData = new groovy.json.JsonSlurper().parseText(response.body)
-    def updatedStatus = responseData.status == settings.onStatus ? 1 : 0
-    updateStatus(updatedStatus)
+    def isOn = responseData.status == settings.onStatus;
+    changeState(isOn)
   }
 }
 
