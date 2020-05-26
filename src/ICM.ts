@@ -3,6 +3,7 @@ import evt from "events";
 import http from "http";
 import dgram, { RemoteInfo } from "dgram";
 
+// The Vista-ICM broadcasts UDP packets on this port.
 const udpListenPort = 3947;
 
 export enum ArmStatus {
