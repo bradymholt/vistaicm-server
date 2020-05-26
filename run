@@ -18,14 +18,14 @@ switch (command) {
   case "init":
     console.log("\x1b[33m%s\x1b[0m", "Initializing project ...");
     exec(
-      "set -x; cd ./server && cp -n -v config.example.json config.json || true && npm install"
+      "set -x; cd ./src && cp -n -v config.example.json config.json || true && npm install"
     );
     break;
   case "start":
     const fs = require("fs");
     if (
-      !fs.existsSync("./server/config.json") ||
-      !fs.existsSync("./server/node_modules")
+      !fs.existsSync("./src/config.json") ||
+      !fs.existsSync("./src/node_modules")
     ) {
       console.log(
         "\x1b[31m%s\x1b[0m",
@@ -33,7 +33,7 @@ switch (command) {
       );
     } else {
       console.log("\x1b[33m%s\x1b[0m", "Starting server ...");
-      exec(`cd ./server && npm run dev`);
+      exec(`cd ./src && npm run dev`);
     }
     break;
   case "deploy":
@@ -44,19 +44,19 @@ switch (command) {
       );
     }
 
-    const appName = require("./server/package.json").name; // Pull name from package.json
+    const appName = require("./src/package.json").name; // Pull name from package.json
     const deployPath = `/opt/${appName}`;
 
     console.log("\x1b[33m%s\x1b[0m", "Deploying ...");
     set("-x");
     echo("[Building]");
-    exec(`cd ./server && npm run build`);
+    exec(`cd ./src && npm run build`);
     echo("[Copying files]");
     exec(
       `ssh ${userAtHost} "set -x; sudo mkdir -p ${deployPath} && sudo chown -R $USER ${deployPath}"`
     );
 
-    exec(`rsync -arv ./server/ ${userAtHost}:${deployPath} --delete`);
+    exec(`rsync -arv ./src/ ${userAtHost}:${deployPath} --delete`);
     echo("[Provisioning]");
     exec(`ssh ${userAtHost} "sudo ${deployPath}/provision-systemd.sh"`);
     console.log("\x1b[32m%s\x1b[0m", "Deployment was successful!");
