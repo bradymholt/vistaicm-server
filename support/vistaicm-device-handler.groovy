@@ -48,8 +48,7 @@ metadata {
 }
 
 def initialize() {
-  storeNetworkDeviceId()
-  runEvery1Minutes(poll)
+  storeNetworkDeviceId()  
 }
 
 def poll() {

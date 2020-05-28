@@ -2,8 +2,11 @@
   "pound_commands": ["1", "2", "3", "4"],
   "web_interface_port": 3904,
   "api_listen_ports": [3905, 3906, 3907, 3908],
-  "smart_things":{
+  "smart_things": {
     "api_access_token": "123",
-    "alarm_device_id": "456"
-  }  
+    "device_ids": {
+      "security_alarm": "123",
+      "fire_alarm": "456"
+    }
+  }
 }
