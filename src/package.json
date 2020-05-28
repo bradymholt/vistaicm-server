@@ -14,12 +14,12 @@
     "prod": "ts-node --transpile-only ./boot.ts"
   },
   "devDependencies": {
-    "@types/node": "^14.0.5",
-    "@types/node-static": "^0.7.5",
-    "@types/socket.io": "^2.1.8",
     "ts-node-dev": "^1.0.0-pre.44"
   },
   "dependencies": {
+    "@types/node": "^14.0.5",
+    "@types/node-static": "^0.7.5",
+    "@types/socket.io": "^2.1.8",
     "node-static": "0.7.11",
     "npm-check-updates": "^6.0.1",
     "request": "^2.88.2",
