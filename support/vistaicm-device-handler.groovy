@@ -48,7 +48,7 @@ metadata {
 }
 
 def initialize() {
-  storeNetworkDeviceId()  
+  storeNetworkDeviceId()
 }
 
 def poll() {
@@ -65,8 +65,8 @@ def on() {
   log.debug "Executing 'on'"
 
   if (!settings.onCommand) {
-    log.debug "There is no onCommand parameter specified for this switch so it will not be turned on."
-    return 
+    log.debug 'There is no onCommand parameter specified for this switch so it will not be turned on.'
+    return
   }
 
   // Update status to 'on' right away
@@ -84,7 +84,6 @@ def off() {
   sendNetworkRequest("/execute/?command=$settings.offCommand", 'GET', false)
 }
 
-
 def changeState(isOn) {
   log.debug "changeState: ${isOn}"
 
@@ -92,7 +91,7 @@ def changeState(isOn) {
     sendEvent(name: 'switch', value: 'on')
   } else {
     sendEvent(name: 'switch', value: 'off')
-  }  
+  }
 }
 
 def sendNetworkRequest(path, method, body) {
@@ -126,7 +125,7 @@ def parse(String description) {
 
   if (response.body != null) {
     def responseData = new groovy.json.JsonSlurper().parseText(response.body)
-    def isOn = responseData.status == settings.onStatus;
+    def isOn = responseData.status == settings.onStatus
     changeState(isOn)
   }
 }
