@@ -24,7 +24,7 @@ preferences {
 }
 
 metadata {
-  definition (name: 'Vista ICM', namespace: 'bradymholt.vistaicm', author: 'Brady Holt') {
+  definition (name: 'Vista ICM', namespace: 'bradymholt', author: 'Brady Holt') {
     capability 'Switch'
     capability 'Refresh'
     capability 'Polling'
