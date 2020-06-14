@@ -14,10 +14,10 @@ Although the VISTA-ICM itself comes with a web interface, it requires Internet E
 - **Listen and respond to events** with a _hook_ architecture. For instance, you can send a SMS message or email when an alarm event occurs.
 - **Schedule commands** to be executed at certain times. For instance, ARM-STAY nightly at 11PM.
 
-Requirements
+## Requirements
 
+- A VISTA-ICM module.  This product has been discontinued from the manufacturer.
 - Node.js >= 9.9.0
-- A user account with sudo access (for deployment)
 
 ## Setup
 
