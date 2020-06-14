@@ -53,7 +53,7 @@ switch (command) {
     exec(`cd ./src && npm run build`);
     echo("[Copying files]");
     exec(
-      `ssh ${userAtHost} "set -x; sudo mkdir -p ${deployPath} && sudo chown -R $USER ${deployPath}"`
+      `ssh ${userAtHost} "set -x; sudo mkdir -p ${deployPath} && sudo chown -R ${userAtHost} ${deployPath}"`
     );
 
     exec(`rsync -arv ./src/ ${userAtHost}:${deployPath} --delete`);
